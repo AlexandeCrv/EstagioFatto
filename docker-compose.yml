@@ -1,0 +1,14 @@
+version: "3"
+services:
+  backend:
+    build: ./back
+    ports:
+      - "3001:3001"
+  frontend:
+    build: ./front
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:3001
+    depends_on:
+      - backend
