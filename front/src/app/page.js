@@ -1,5 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
+import {
+  FaPencilAlt,
+  FaTrash,
+  FaCheck,
+  FaTimes,
+  FaArrowUp,
+  FaArrowDown,
+} from "react-icons/fa";
 
 export default function Home() {
   const [tarefas, setTarefas] = useState([]);
@@ -88,10 +96,9 @@ export default function Home() {
           type="number"
           placeholder="Custo"
           value={novaTarefa.custo}
-          onChange={(e) => {
-            const value = Math.max(0, e.target.value);
-            setNovaTarefa({ ...novaTarefa, custo: value });
-          }}
+          onChange={(e) =>
+            setNovaTarefa({ ...novaTarefa, custo: Math.max(0, e.target.value) })
+          }
           required
           className="px-4 py-2 border rounded focus:outline-none text-black focus:ring-2 focus:ring-blue-400"
         />
@@ -112,7 +119,7 @@ export default function Home() {
         </button>
       </form>
 
-      <div className="overflow-x-auto">
+      <div className="">
         <table className="min-w-full bg-white shadow rounded-lg">
           <thead>
             <tr className="bg-blue-500 text-white">
@@ -179,13 +186,13 @@ export default function Home() {
                         onClick={handleAtualizarTarefa}
                         className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 transition"
                       >
-                        Salvar
+                        <FaCheck className="w-5 h-5 inline" /> Salvar
                       </button>
                       <button
                         onClick={() => setTarefaEditando(null)}
                         className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition"
                       >
-                        Cancelar
+                        <FaTimes className="w-5 h-5 inline" /> Cancelar
                       </button>
                     </td>
                   </>
@@ -204,13 +211,13 @@ export default function Home() {
                         onClick={() => setTarefaEditando(tarefa)}
                         className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition"
                       >
-                        Editar
+                        <FaPencilAlt className="w-5 h-5 inline" /> Editar
                       </button>
                       <button
                         onClick={() => handleExcluirTarefa(tarefa.id)}
                         className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition"
                       >
-                        Excluir
+                        <FaTrash className="w-5 h-5 inline" /> Excluir
                       </button>
                     </td>
                     <td className="py-3 px-4 flex gap-2">
@@ -219,14 +226,14 @@ export default function Home() {
                         disabled={index === 0}
                         className="bg-gray-300 text-black px-2 py-1 rounded hover:bg-gray-400 disabled:opacity-50"
                       >
-                        Subir
+                        <FaArrowUp className="w-5 h-5 inline" /> Subir
                       </button>
                       <button
                         onClick={() => handleMoveTask(index, 1)}
                         disabled={index === tarefas.length - 1}
                         className="bg-gray-300 text-black px-2 py-1 rounded hover:bg-gray-400 disabled:opacity-50"
                       >
-                        Descer
+                        <FaArrowDown className="w-5 h-5 inline" /> Descer
                       </button>
                     </td>
                   </>
