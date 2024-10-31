@@ -49,6 +49,21 @@ export default function Home() {
     fetchTarefas();
   };
 
+  // Função para reordenar as tarefassss
+  const handleMoveTask = (index, direction) => {
+    const newOrder = [...tarefas];
+    const targetIndex = index + direction;
+
+    if (targetIndex >= 0 && targetIndex < tarefas.length) {
+      // Troca as tarefas de posiçãoooo
+      [newOrder[index], newOrder[targetIndex]] = [
+        newOrder[targetIndex],
+        newOrder[index],
+      ];
+      setTarefas(newOrder);
+    }
+  };
+
   return (
     <div className="container mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
       <h1 className="text-2xl font-bold text-center mb-6 text-blue-600">
@@ -57,7 +72,7 @@ export default function Home() {
 
       <form
         onSubmit={handleAdicionarTarefa}
-        className="flex flex-col gap-4 mb-6 text-black"
+        className="flex flex-col gap-4 mb-6"
       >
         <input
           type="text"
@@ -67,17 +82,18 @@ export default function Home() {
             setNovaTarefa({ ...novaTarefa, nome: e.target.value })
           }
           required
-          className="px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="px-4 py-2 border rounded focus:outline-none text-black focus:ring-2 focus:ring-blue-400"
         />
         <input
           type="number"
           placeholder="Custo"
           value={novaTarefa.custo}
-          onChange={(e) =>
-            setNovaTarefa({ ...novaTarefa, custo: e.target.value })
-          }
+          onChange={(e) => {
+            const value = Math.max(0, e.target.value);
+            setNovaTarefa({ ...novaTarefa, custo: value });
+          }}
           required
-          className="px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="px-4 py-2 border rounded focus:outline-none text-black focus:ring-2 focus:ring-blue-400"
         />
         <input
           type="date"
@@ -86,7 +102,7 @@ export default function Home() {
             setNovaTarefa({ ...novaTarefa, data_limite: e.target.value })
           }
           required
-          className="px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="px-4 py-2 border rounded focus:outline-none focus:ring-2 text-black focus:ring-blue-400"
         />
         <button
           type="submit"
@@ -96,7 +112,6 @@ export default function Home() {
         </button>
       </form>
 
-      {/* Tabela de tarefasssssss */}
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white shadow rounded-lg">
           <thead>
@@ -106,10 +121,11 @@ export default function Home() {
               <th className="py-3 px-4 text-left">Custo</th>
               <th className="py-3 px-4 text-left">Data Limite</th>
               <th className="py-3 px-4 text-left">Ações</th>
+              <th className="py-3 px-4 text-left">Mover</th>
             </tr>
           </thead>
           <tbody>
-            {tarefas.map((tarefa) => (
+            {tarefas.map((tarefa, index) => (
               <tr
                 key={tarefa.id}
                 className={`${
@@ -129,7 +145,7 @@ export default function Home() {
                             nome: e.target.value,
                           })
                         }
-                        className="px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        className="px-2 py-1 border rounded focus:outline-none text-black focus:ring-2 focus:ring-blue-400"
                       />
                     </td>
                     <td className="py-3 px-4">
@@ -139,10 +155,10 @@ export default function Home() {
                         onChange={(e) =>
                           setTarefaEditando({
                             ...tarefaEditando,
-                            custo: e.target.value,
+                            custo: Math.max(0, e.target.value),
                           })
                         }
-                        className="px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        className="px-2 py-1 border rounded focus:outline-none text-black focus:ring-2 focus:ring-blue-400"
                       />
                     </td>
                     <td className="py-3 px-4">
@@ -155,7 +171,7 @@ export default function Home() {
                             data_limite: e.target.value,
                           })
                         }
-                        className="px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        className="px-2 py-1 border rounded focus:outline-none focus:ring-2 text-black focus:ring-blue-400"
                       />
                     </td>
                     <td className="py-3 px-4 flex gap-2">
@@ -175,15 +191,15 @@ export default function Home() {
                   </>
                 ) : (
                   <>
-                    <td className="py-3 px-4 text-black">{tarefa.id}</td>
-                    <td className="py-3 px-4 text-black">{tarefa.nome}</td>
-                    <td className="py-3 px-4 text-black">
+                    <td className="py-3 text-black px-4">{tarefa.id}</td>
+                    <td className="py-3 text-black px-4">{tarefa.nome}</td>
+                    <td className="py-3 text-black px-4">
                       R$ {tarefa.custo.toFixed(2)}
                     </td>
-                    <td className="py-3 px-4 text-black">
+                    <td className="py-3 text-black px-4">
                       {tarefa.data_limite}
                     </td>
-                    <td className="py-3 px-4 flex gap-2 text-black">
+                    <td className="py-3 text-black px-4 flex gap-2">
                       <button
                         onClick={() => setTarefaEditando(tarefa)}
                         className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition"
@@ -195,6 +211,22 @@ export default function Home() {
                         className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition"
                       >
                         Excluir
+                      </button>
+                    </td>
+                    <td className="py-3 px-4 flex gap-2">
+                      <button
+                        onClick={() => handleMoveTask(index, -1)}
+                        disabled={index === 0}
+                        className="bg-gray-300 text-black px-2 py-1 rounded hover:bg-gray-400 disabled:opacity-50"
+                      >
+                        Subir
+                      </button>
+                      <button
+                        onClick={() => handleMoveTask(index, 1)}
+                        disabled={index === tarefas.length - 1}
+                        className="bg-gray-300 text-black px-2 py-1 rounded hover:bg-gray-400 disabled:opacity-50"
+                      >
+                        Descer
                       </button>
                     </td>
                   </>
