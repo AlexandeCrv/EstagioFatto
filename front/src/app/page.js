@@ -55,7 +55,6 @@ export default function Home() {
         Lista de Tarefas
       </h1>
 
-      {/* Formulário para adicionar nova tarefa */}
       <form
         onSubmit={handleAdicionarTarefa}
         className="flex flex-col gap-4 mb-6 text-black"
@@ -97,7 +96,7 @@ export default function Home() {
         </button>
       </form>
 
-      {/* Tabela de tarefas */}
+      {/* Tabela de tarefasssssss */}
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white shadow rounded-lg">
           <thead>
