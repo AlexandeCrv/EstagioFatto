@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "API para tarefas com Node.js e SQLite",
   "main": "app.js",
+  "engines": {
+    "node": "14.x"
+  },
   "scripts": {
     "start": "node app.js"
   },
