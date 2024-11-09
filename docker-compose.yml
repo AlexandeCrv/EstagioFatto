@@ -1,14 +1,52 @@
-version: "3"
+version: "3.8"
+
 services:
   backend:
-    build: ./back
-    ports:
-      - "3001:3001"
-  frontend:
-    build: ./front
+    build: ./backend
     ports:
       - "3000:3000"
+    volumes:
+      - ./backend:/app
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:3001
+      - NODE_ENV=development
     depends_on:
-      - backend
+      - db
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+      MYSQL_DATABASE: tarefasdb
+      MYSQL_USER: "root"
+
+    ports:
+      - "3309:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  frontend:
+    build: ./front
+    image: docker-front-app
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./front:/app
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: z3smartdigital-portainer
+    hostname: z3smartdigital-portainer
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - portainer_data_container:/data
+    ports:
+      - "9000:9000"
+      - "9443:9443"
+
+volumes:
+  mysql_data:
+  portainer_data_container:

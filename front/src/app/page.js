@@ -23,14 +23,14 @@ export default function Home() {
   }, []);
 
   const fetchTarefas = async () => {
-    const res = await fetch("http://localhost:3001/tarefas");
+    const res = await fetch("http://localhost:3000/tarefas");
     const data = await res.json();
     setTarefas(data);
   };
 
   const handleAdicionarTarefa = async (e) => {
     e.preventDefault();
-    await fetch("http://localhost:3001/tarefas", {
+    await fetch("http://localhost:3000/tarefas", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(novaTarefa),
@@ -41,20 +41,34 @@ export default function Home() {
 
   const handleExcluirTarefa = async (id) => {
     if (confirm("Tem certeza que deseja excluir esta tarefa?")) {
-      await fetch(`http://localhost:3001/tarefas/${id}`, { method: "DELETE" });
+      await fetch(`http://localhost:3000/tarefas/${id}`, { method: "DELETE" });
       fetchTarefas();
     }
   };
 
   const handleAtualizarTarefa = async (e) => {
     e.preventDefault();
-    await fetch(`http://localhost:3001/tarefas/${tarefaEditando.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(tarefaEditando),
-    });
-    setTarefaEditando(null);
-    fetchTarefas();
+    try {
+      const res = await fetch(
+        `http://localhost:3000/tarefas/${tarefaEditando.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(tarefaEditando),
+        }
+      );
+
+      if (res.ok) {
+        // Se a atualização for bem-sucedida, recarregue as tarefas
+        await fetchTarefas();
+        setTarefaEditando(null);
+      } else {
+        const errorData = await res.json();
+        console.error("Erro ao atualizar tarefa:", errorData);
+      }
+    } catch (err) {
+      console.error("Erro na requisição:", err);
+    }
   };
 
   // Função para reordenar as tarefassss
@@ -132,7 +146,7 @@ export default function Home() {
             </tr>
           </thead>
           <tbody>
-            {tarefas.map((tarefa, index) => (
+            {tarefas?.map((tarefa, index) => (
               <tr
                 key={tarefa.id}
                 className={`${
@@ -201,7 +215,10 @@ export default function Home() {
                     <td className="py-3 text-black px-4">{tarefa.id}</td>
                     <td className="py-3 text-black px-4">{tarefa.nome}</td>
                     <td className="py-3 text-black px-4">
-                      R$ {tarefa.custo.toFixed(2)}
+                      R${" "}
+                      {Number(tarefa.custo)
+                        ? Number(tarefa.custo).toFixed(2)
+                        : "0.00"}
                     </td>
                     <td className="py-3 text-black px-4">
                       {tarefa.data_limite}
