@@ -9,6 +9,10 @@ services:
       - ./backend:/app
     environment:
       - NODE_ENV=development
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=123456
+      - DB_NAME=tarefasdb
     depends_on:
       - db
 
