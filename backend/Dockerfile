@@ -6,8 +6,10 @@ WORKDIR /app
 
 # Copia o package.json e instala as dependências
 COPY package*.json ./
-RUN apt-get update && apt-get install -y wait-for-it
+RUN npm install
 
+# Instala a ferramenta wait-for-it, se necessário
+RUN apt-get update && apt-get install -y wait-for-it
 
 # Copia o restante dos arquivos do projeto para o diretório de trabalho
 COPY . .
